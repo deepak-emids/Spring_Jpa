@@ -12,13 +12,13 @@ public interface IEmployeeService {
 
     ResponseDto addEmployee(EmployeeDto subject);
 
-    List<Employee> getAllEmployee();
+    ResponseDto getAllEmployee();
 
-    Optional<Employee> getEmployee(int id);
+    ResponseDto getEmployee(int id);
 
-    Employee updateEmployee(EmployeeDto subject,int id);
+    ResponseDto updateEmployee(EmployeeDto subject,int id);
 
-    void deleteEmployee(int id);
+    ResponseDto deleteEmployee(int id);
 
 }
 

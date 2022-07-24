@@ -45,28 +45,45 @@ public class EmployeeService implements IEmployeeService {
         }
     }
 
-    public List<Employee> getAllEmployee() {
+    public ResponseDto getAllEmployee() {
         List<Employee> employee = new ArrayList<>();
         employeeRepository.findAll().forEach(employee::add);
-        return employee;
+
+        responseDto.setData(employee);
+        responseDto.setStatus(200);
+        responseDto.setMessage("Employees Fetched");
+
+        return responseDto;
     }
 
     @Override
-    public Optional<Employee> getEmployee(int id) {
+    public ResponseDto getEmployee(int id) {
         Optional<Employee> employee = employeeRepository.findById(id);
-        return employee;
+        responseDto.setData(employee);
+        responseDto.setMessage("Employee Fetched");
+        responseDto.setStatus(200);
+        return responseDto;
     }
 
     @Override
-    public Employee updateEmployee(EmployeeDto emp, int id) {
+    public ResponseDto updateEmployee(EmployeeDto emp, int id) {
         Employee employee = employeeRepository.findById(id).get();
         employee.setEmail(emp.getEmail());
         employee.setPassword(emp.getPassword());
-        return employeeRepository.save(employee);
+
+        Employee e = employeeRepository.save(employee);
+        responseDto.setData(e);
+        responseDto.setMessage("Employee Updated");
+        responseDto.setStatus(200);
+        return responseDto;
     }
 
     @Override
-    public void deleteEmployee(int id) {
+    public ResponseDto deleteEmployee(int id) {
         employeeRepository.deleteById(id);
+        responseDto.setMessage("Employee Deleted");
+        responseDto.setStatus(200);
+
+        return responseDto;
     }
 }
