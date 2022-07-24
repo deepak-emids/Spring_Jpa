@@ -1,5 +1,6 @@
 package com.ems.service;
 
+import com.ems.dto.ResponseDto;
 import com.ems.model.Employee;
 import com.ems.dto.EmployeeDto;
 
@@ -9,7 +10,7 @@ import java.util.Optional;
 
 public interface IEmployeeService {
 
-    Employee addEmployee(EmployeeDto subject);
+    ResponseDto addEmployee(EmployeeDto subject);
 
     List<Employee> getAllEmployee();
 

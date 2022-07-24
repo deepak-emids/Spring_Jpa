@@ -8,6 +8,7 @@ import javax.persistence.Table;
 
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -25,4 +26,6 @@ public class Employee {
 
     private String email;
     private String password;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

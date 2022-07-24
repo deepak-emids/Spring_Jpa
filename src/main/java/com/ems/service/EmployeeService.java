@@ -1,9 +1,12 @@
 package com.ems.service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.ems.dto.ResponseDto;
+import com.ems.exceptions.EmployeeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,42 +18,55 @@ import com.ems.repository.EmployeeRepository;
 public class EmployeeService implements IEmployeeService {
 
     @Autowired
-    public EmployeeRepository employeeRepo;
+    public EmployeeRepository employeeRepository;
+
+    @Autowired
+    ResponseDto responseDto;
 
     @Override
-    public Employee addEmployee(EmployeeDto employee) {
-        // TODO Auto-generated method stub
-        Employee s = new Employee();
+    public ResponseDto addEmployee(EmployeeDto employee) {
 
-        s.setEmail(employee.getEmail());
-        s.setPassword(employee.getPassword());
-        return employeeRepo.save(s);
+        Employee emp = employeeRepository.findByEmail(employee.getEmail());
+
+        if (emp != null) {
+            throw new EmployeeException("Email Id already registered, Use Different Email Id.");
+        } else {
+            Employee s = new Employee();
+
+            s.setEmail(employee.getEmail());
+            s.setPassword(employee.getPassword());
+
+            LocalDateTime createdAtTime = LocalDateTime.now();
+            s.setCreatedAt(createdAtTime);
+            s.setUpdatedAt(createdAtTime);
+            Employee e = employeeRepository.save(s);
+            responseDto.setData(e);
+            return responseDto;
+        }
     }
 
     public List<Employee> getAllEmployee() {
         List<Employee> employee = new ArrayList<>();
-        employeeRepo.findAll().forEach(employee::add);
+        employeeRepository.findAll().forEach(employee::add);
         return employee;
     }
 
     @Override
     public Optional<Employee> getEmployee(int id) {
-        Optional<Employee> employee = employeeRepo.findById(id);
+        Optional<Employee> employee = employeeRepository.findById(id);
         return employee;
     }
 
     @Override
     public Employee updateEmployee(EmployeeDto emp, int id) {
-
-        Employee employee = employeeRepo.findById(id).get();
-
+        Employee employee = employeeRepository.findById(id).get();
         employee.setEmail(emp.getEmail());
         employee.setPassword(emp.getPassword());
-        return employeeRepo.save(employee);
+        return employeeRepository.save(employee);
     }
 
     @Override
     public void deleteEmployee(int id) {
-        employeeRepo.deleteById(id);
+        employeeRepository.deleteById(id);
     }
 }
