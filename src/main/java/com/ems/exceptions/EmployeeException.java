@@ -1,7 +1,13 @@
 package com.ems.exceptions;
 
-public class EmployeeException extends RuntimeException {
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
+@Data
+public class EmployeeException extends RuntimeException {
     String message;
     ExceptionType eType;
 
