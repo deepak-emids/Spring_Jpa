@@ -1,17 +1,11 @@
 package com.ems.controller;
 
-import java.util.List;
-import java.util.Optional;
-
 import com.ems.converter.DtoConverter;
 import com.ems.dto.ResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import com.ems.dto.EmployeeDto;
-import com.ems.model.Employee;
 import com.ems.service.EmployeeService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -28,33 +22,33 @@ public class EmployeeController {
     private DtoConverter converter;
 
     @PostMapping()
-    public ResponseDto addEmployee(@RequestBody EmployeeDto employee) {
-        ResponseDto saved = employeeService.addEmployee(employee);
-        return saved;
+    public ResponseEntity addEmployee(@RequestBody EmployeeDto employee) {
+        ResponseDto result = employeeService.addEmployee(employee);
+        return ResponseEntity.status(result.getStatus()).body(result);
     }
 
     @GetMapping()
-    public ResponseDto getAllEmployees() {
-        ResponseDto list = employeeService.getAllEmployee();
-        return list;
+    public ResponseEntity getAllEmployees() {
+        ResponseDto result = employeeService.getAllEmployee();
+        return ResponseEntity.status(result.getStatus()).body(result);
     }
 
     @GetMapping("/{id}")
-    public ResponseDto getEmployees(@PathVariable("id") int id) {
-        ResponseDto employee = employeeService.getEmployee(id);
-        return employee;
+    public ResponseEntity getEmployees(@PathVariable("id") int id) {
+        ResponseDto result = employeeService.getEmployee(id);
+        return ResponseEntity.status(result.getStatus()).body(result);
     }
 
     @PutMapping("/{id}")
-    public ResponseDto updateEmployee(@RequestBody EmployeeDto employee, @PathVariable("id") int id) {
-        ResponseDto updated = employeeService.updateEmployee(employee, id);
+    public ResponseEntity updateEmployee(@RequestBody EmployeeDto employee, @PathVariable("id") int id) {
+        ResponseDto result = employeeService.updateEmployee(employee, id);
 
-        return updated;
+        return ResponseEntity.status(result.getStatus()).body(result);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseDto deleteEmployees(@PathVariable("id") int id) {
-        ResponseDto delete = employeeService.deleteEmployee(id);
-        return delete;
+    public ResponseEntity deleteEmployees(@PathVariable("id") int id) {
+        ResponseDto result = employeeService.deleteEmployee(id);
+        return ResponseEntity.status(result.getStatus()).body(result);
     }
 }

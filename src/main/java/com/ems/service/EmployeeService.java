@@ -26,21 +26,24 @@ public class EmployeeService implements IEmployeeService {
     @Override
     public ResponseDto addEmployee(EmployeeDto employee) {
 
-        Employee emp = employeeRepository.findByEmail(employee.getEmail());
+        Employee foundEmployee = employeeRepository.findByEmail(employee.getEmail());
 
-        if (emp != null) {
+        if (foundEmployee != null) {
             throw new EmployeeException("Email Id already registered, Use Different Email Id.");
         } else {
-            Employee s = new Employee();
+            Employee emp = new Employee();
 
-            s.setEmail(employee.getEmail());
-            s.setPassword(employee.getPassword());
+            emp.setEmail(employee.getEmail());
+            emp.setPassword(employee.getPassword());
 
             LocalDateTime createdAtTime = LocalDateTime.now();
-            s.setCreatedAt(createdAtTime);
-            s.setUpdatedAt(createdAtTime);
-            Employee e = employeeRepository.save(s);
-            responseDto.setData(e);
+            emp.setCreatedAt(createdAtTime);
+            emp.setUpdatedAt(createdAtTime);
+
+            Employee saved = employeeRepository.save(emp);
+            responseDto.setData(saved);
+            responseDto.setStatus(200);
+            responseDto.setMessage("Employees Registered");
             return responseDto;
         }
     }
@@ -49,41 +52,66 @@ public class EmployeeService implements IEmployeeService {
         List<Employee> employee = new ArrayList<>();
         employeeRepository.findAll().forEach(employee::add);
 
-        responseDto.setData(employee);
-        responseDto.setStatus(200);
-        responseDto.setMessage("Employees Fetched");
+        if (employee.size() == 0) {
+            responseDto.setData(employee);
+            responseDto.setStatus(404);
+            responseDto.setMessage("Employees Not Found");
 
+        } else {
+            responseDto.setData(employee);
+            responseDto.setStatus(200);
+            responseDto.setMessage("Employees Fetched");
+        }
         return responseDto;
     }
 
     @Override
     public ResponseDto getEmployee(int id) {
         Optional<Employee> employee = employeeRepository.findById(id);
-        responseDto.setData(employee);
-        responseDto.setMessage("Employee Fetched");
-        responseDto.setStatus(200);
+        if (employee == null) {
+            responseDto.setData(employee);
+            responseDto.setMessage("Employee Not Found");
+            responseDto.setStatus(404);
+        } else {
+            responseDto.setData(employee);
+            responseDto.setMessage("Employee Found");
+            responseDto.setStatus(200);
+        }
         return responseDto;
     }
 
     @Override
     public ResponseDto updateEmployee(EmployeeDto emp, int id) {
         Employee employee = employeeRepository.findById(id).get();
-        employee.setEmail(emp.getEmail());
-        employee.setPassword(emp.getPassword());
 
-        Employee e = employeeRepository.save(employee);
-        responseDto.setData(e);
-        responseDto.setMessage("Employee Updated");
-        responseDto.setStatus(200);
+        if (employee != null) {
+            employee.setEmail(emp.getEmail());
+            employee.setPassword(emp.getPassword());
+
+            Employee updated = employeeRepository.save(employee);
+            responseDto.setData(updated);
+            responseDto.setMessage("Employee Updated");
+            responseDto.setStatus(200);
+        } else {
+            responseDto.setMessage("Employee Not Found");
+            responseDto.setStatus(404);
+        }
         return responseDto;
     }
 
     @Override
     public ResponseDto deleteEmployee(int id) {
-        employeeRepository.deleteById(id);
-        responseDto.setMessage("Employee Deleted");
-        responseDto.setStatus(200);
+        Employee employee = employeeRepository.findById(id).get();
 
+        if (employee != null) {
+            employeeRepository.deleteById(id);
+            responseDto.setMessage("Employee Deleted");
+            responseDto.setStatus(200);
+
+        }else {
+            responseDto.setMessage("Employee Not Found");
+            responseDto.setStatus(404);
+        }
         return responseDto;
     }
 }
