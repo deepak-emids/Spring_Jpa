@@ -10,7 +10,6 @@ import java.util.Set;
 @Setter
 @Data
 public class EmployeeDto {
-    public int id;
     public String email;
     public String password;
 }

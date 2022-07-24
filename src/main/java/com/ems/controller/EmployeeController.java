@@ -3,13 +3,13 @@ package com.ems.controller;
 import java.util.List;
 import java.util.Optional;
 
+import com.ems.converter.DtoConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.ems.dto.EmployeeDto;
-import com.ems.dto.EmployeeResponseDto;
 import com.ems.model.Employee;
 import com.ems.service.EmployeeService;
 
@@ -23,16 +23,15 @@ public class EmployeeController {
     @Autowired
     private EmployeeService employeeService;
 
+    @Autowired
+    private DtoConverter converter;
+
     @PostMapping()
-    public EmployeeResponseDto addEmployee(@RequestBody EmployeeDto employee) {
-
+    public ResponseEntity<EmployeeDto> addEmployee(@RequestBody EmployeeDto employee) {
         Employee saved = employeeService.addEmployee(employee);
+        EmployeeDto data = converter.EmployeeToDto(saved);
 
-        EmployeeResponseDto responseDto = new EmployeeResponseDto();
-        responseDto.setName(saved.getEmail());
-        responseDto.setPassword(saved.getPassword());
-        responseDto.setId(saved.getId());
-        return responseDto;
+        return ResponseEntity.status(HttpStatus.CREATED).body(data);
     }
 
     @GetMapping()
@@ -41,25 +40,21 @@ public class EmployeeController {
         if (list.size() <= 0) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-        return ResponseEntity.status(HttpStatus.CREATED).body(list);
+        return ResponseEntity.status(HttpStatus.OK).body(list);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Optional<Employee>> getEmployees(@PathVariable("id") int id) {
         Optional<Employee> employee = employeeService.getEmployee(id);
-        return ResponseEntity.status(HttpStatus.CREATED).body(employee);
+        return ResponseEntity.status(HttpStatus.OK).body(employee);
     }
 
     @PutMapping("/{id}")
-    public EmployeeResponseDto updateEmployee(@RequestBody EmployeeDto employee, @PathVariable("id") int id) {
-
+    public ResponseEntity<EmployeeDto> updateEmployee(@RequestBody EmployeeDto employee, @PathVariable("id") int id) {
         Employee updated = employeeService.updateEmployee(employee, id);
+        EmployeeDto data = converter.EmployeeToDto(updated);
 
-        EmployeeResponseDto responseDto = new EmployeeResponseDto();
-        responseDto.setName(updated.getEmail());
-        responseDto.setPassword(updated.getPassword());
-        responseDto.setId(updated.getId());
-        return responseDto;
+        return ResponseEntity.status(HttpStatus.CREATED).body(data);
     }
 
     @DeleteMapping("/{id}")
