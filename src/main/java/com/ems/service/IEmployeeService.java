@@ -10,13 +10,13 @@ import java.util.Optional;
 
 public interface IEmployeeService {
 
-    ResponseDto addEmployee(EmployeeDto subject);
+    ResponseDto addEmployee(EmployeeDto employee);
 
     ResponseDto getAllEmployee();
 
     ResponseDto getEmployee(int id);
 
-    ResponseDto updateEmployee(EmployeeDto subject,int id);
+    ResponseDto updateEmployee(EmployeeDto employee,int id);
 
     ResponseDto deleteEmployee(int id);
 

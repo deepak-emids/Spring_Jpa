@@ -7,6 +7,8 @@ import java.util.Optional;
 
 import com.ems.dto.ResponseDto;
 import com.ems.exceptions.EmployeeException;
+import com.ems.exceptions.ExceptionType;
+import com.ems.exceptions.GlobalExceptionsHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +31,7 @@ public class EmployeeService implements IEmployeeService {
         Employee foundEmployee = employeeRepository.findByEmail(employee.getEmail());
 
         if (foundEmployee != null) {
-            throw new EmployeeException("Email Id already registered, Use Different Email Id.");
+            throw new EmployeeException("Email Id already registered, Use Different Email Id.", ExceptionType.CONFLICT);
         } else {
             Employee emp = new Employee();
 
@@ -53,10 +55,7 @@ public class EmployeeService implements IEmployeeService {
         employeeRepository.findAll().forEach(employee::add);
 
         if (employee.size() == 0) {
-            responseDto.setData(employee);
-            responseDto.setStatus(404);
-            responseDto.setMessage("Employees Not Found");
-
+            throw new EmployeeException("Employees Not Found", ExceptionType.EMPLOYEE_NOT_FOUND);
         } else {
             responseDto.setData(employee);
             responseDto.setStatus(200);
@@ -68,10 +67,10 @@ public class EmployeeService implements IEmployeeService {
     @Override
     public ResponseDto getEmployee(int id) {
         Optional<Employee> employee = employeeRepository.findById(id);
-        if (employee == null) {
-            responseDto.setData(employee);
-            responseDto.setMessage("Employee Not Found");
-            responseDto.setStatus(404);
+
+        if (employee.isEmpty()) {
+            System.out.println("hi");
+            throw new EmployeeException("Employee Not Found", ExceptionType.EMPLOYEE_NOT_FOUND);
         } else {
             responseDto.setData(employee);
             responseDto.setMessage("Employee Found");
@@ -82,35 +81,34 @@ public class EmployeeService implements IEmployeeService {
 
     @Override
     public ResponseDto updateEmployee(EmployeeDto emp, int id) {
-        Employee employee = employeeRepository.findById(id).get();
+        Optional<Employee> employee = employeeRepository.findById(id);
 
-        if (employee != null) {
-            employee.setEmail(emp.getEmail());
-            employee.setPassword(emp.getPassword());
+        if (employee.isEmpty()) {
+            throw new EmployeeException("Employee Not Found", ExceptionType.EMPLOYEE_NOT_FOUND);
+        } else {
+            employee.get().setEmail(emp.getEmail());
+            employee.get().setPassword(emp.getPassword());
 
-            Employee updated = employeeRepository.save(employee);
+            Employee updated = employeeRepository.save(employee.get());
             responseDto.setData(updated);
             responseDto.setMessage("Employee Updated");
             responseDto.setStatus(200);
-        } else {
-            responseDto.setMessage("Employee Not Found");
-            responseDto.setStatus(404);
         }
         return responseDto;
     }
 
     @Override
     public ResponseDto deleteEmployee(int id) {
-        Employee employee = employeeRepository.findById(id).get();
+        Optional<Employee> employee = employeeRepository.findById(id);
 
-        if (employee != null) {
+        System.out.println(employee);
+        if (employee.isEmpty()) {
+            throw new EmployeeException("Employee Not Found", ExceptionType.EMPLOYEE_NOT_FOUND);
+        } else {
             employeeRepository.deleteById(id);
+            responseDto.setData("");
             responseDto.setMessage("Employee Deleted");
             responseDto.setStatus(200);
-
-        }else {
-            responseDto.setMessage("Employee Not Found");
-            responseDto.setStatus(404);
         }
         return responseDto;
     }
