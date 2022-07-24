@@ -4,6 +4,7 @@ import com.ems.model.Employee;
 import com.ems.dto.EmployeeDto;
 
 import java.util.List;
+import java.util.Optional;
 
 
 public interface IEmployeeService {
@@ -12,7 +13,7 @@ public interface IEmployeeService {
 
     List<Employee> getAllEmployee();
 
-    Employee getEmployee(int id);
+    Optional<Employee> getEmployee(int id);
 
     Employee updateEmployee(EmployeeDto subject,int id);
 

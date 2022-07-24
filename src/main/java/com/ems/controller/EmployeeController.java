@@ -1,14 +1,12 @@
 package com.ems.controller;
 
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.ems.dto.EmployeeDto;
 import com.ems.dto.EmployeeResponseDto;
@@ -33,6 +31,7 @@ public class EmployeeController {
         EmployeeResponseDto responseDto = new EmployeeResponseDto();
         responseDto.setName(saved.getEmail());
         responseDto.setPassword(saved.getPassword());
+        responseDto.setId(saved.getId());
         return responseDto;
     }
 
@@ -43,5 +42,29 @@ public class EmployeeController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(list);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Optional<Employee>> getEmployees(@PathVariable("id") int id) {
+        Optional<Employee> employee = employeeService.getEmployee(id);
+        return ResponseEntity.status(HttpStatus.CREATED).body(employee);
+    }
+
+    @PutMapping("/{id}")
+    public EmployeeResponseDto updateEmployee(@RequestBody EmployeeDto employee, @PathVariable("id") int id) {
+
+        Employee updated = employeeService.updateEmployee(employee, id);
+
+        EmployeeResponseDto responseDto = new EmployeeResponseDto();
+        responseDto.setName(updated.getEmail());
+        responseDto.setPassword(updated.getPassword());
+        responseDto.setId(updated.getId());
+        return responseDto;
+    }
+
+    @DeleteMapping("/{id}")
+    public String deleteEmployees(@PathVariable("id") int id) {
+        employeeService.deleteEmployee(id);
+        return "Employee deleted";
     }
 }

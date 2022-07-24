@@ -2,6 +2,7 @@ package com.ems.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,17 +34,23 @@ public class EmployeeService implements IEmployeeService {
     }
 
     @Override
-    public Employee getEmployee(int id) {
-        return null;
+    public Optional<Employee> getEmployee(int id) {
+        Optional<Employee> employee = employeeRepo.findById(id);
+        return employee;
     }
 
     @Override
-    public Employee updateEmployee(EmployeeDto subject,int id) {
-        return null;
+    public Employee updateEmployee(EmployeeDto emp, int id) {
+
+        Employee employee = employeeRepo.findById(id).get();
+
+        employee.setEmail(emp.getEmail());
+        employee.setPassword(emp.getPassword());
+        return employeeRepo.save(employee);
     }
 
     @Override
     public void deleteEmployee(int id) {
-
+        employeeRepo.deleteById(id);
     }
 }

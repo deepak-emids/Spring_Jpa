@@ -10,7 +10,6 @@ import java.util.Set;
 @Setter
 @Data
 public class EmployeeResponseDto {
-
 	public int id;
 	public String name;
 	public String password;
