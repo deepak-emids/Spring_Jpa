@@ -1,5 +1,6 @@
 package com.ems.dto;
 
+import com.ems.exceptions.ExceptionType;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -11,9 +12,9 @@ import java.util.Date;
 public class ExceptionDto {
     private Date timestamp;
     private String message;
-    private String details;
+    private ExceptionType details;
 
-    public ExceptionDto(Date timestamp, String message, String details) {
+    public ExceptionDto(Date timestamp, String message, ExceptionType details) {
         super();
         this.timestamp = timestamp;
         this.message = message;

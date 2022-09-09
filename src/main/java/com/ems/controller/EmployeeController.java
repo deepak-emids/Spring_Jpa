@@ -10,6 +10,8 @@ import com.ems.service.EmployeeService;
 
 import lombok.extern.slf4j.Slf4j;
 
+import javax.validation.Valid;
+
 @Slf4j
 @RestController
 @RequestMapping("/employee")
@@ -22,7 +24,7 @@ public class EmployeeController {
     private DtoConverter converter;
 
     @PostMapping()
-    public ResponseEntity addEmployee(@RequestBody EmployeeDto employee) {
+    public ResponseEntity addEmployee(@Valid @RequestBody EmployeeDto employee){
         ResponseDto result = employeeService.addEmployee(employee);
         return ResponseEntity.status(result.getStatus()).body(result);
     }
@@ -34,20 +36,20 @@ public class EmployeeController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity getEmployees(@PathVariable("id") int id) {
+    public ResponseEntity getEmployees(@Valid @PathVariable("id") int id) {
         ResponseDto result = employeeService.getEmployee(id);
         return ResponseEntity.status(result.getStatus()).body(result);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity updateEmployee(@RequestBody EmployeeDto employee, @PathVariable("id") int id) {
+    public ResponseEntity updateEmployee(@Valid @RequestBody EmployeeDto employee, @Valid @PathVariable("id") int id) {
         ResponseDto result = employeeService.updateEmployee(employee, id);
 
         return ResponseEntity.status(result.getStatus()).body(result);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteEmployees(@PathVariable("id") int id) {
+    public ResponseEntity deleteEmployees(@Valid @PathVariable("id") int id) {
         ResponseDto result = employeeService.deleteEmployee(id);
         return ResponseEntity.status(result.getStatus()).body(result);
     }

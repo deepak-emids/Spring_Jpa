@@ -13,7 +13,6 @@ import java.util.Date;
 public class GlobalExceptionsHandler {
     @ExceptionHandler(EmployeeException.class)
     public ResponseEntity<ExceptionDto> handleEmployeeException(EmployeeException e, WebRequest request) {
-        return new ResponseEntity<ExceptionDto>(new ExceptionDto(new Date(), e.getEType()+"  "+e.getMessage(),
-                request.getDescription(false)), HttpStatus.CONFLICT);
+        return new ResponseEntity<ExceptionDto>(new ExceptionDto(new Date(), e.getMessage(), e.getEType()), HttpStatus.CONFLICT);
     }
 }
